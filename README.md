@@ -21,4 +21,4 @@ rs      10      7       92383888        A       C,G,T
 The trick to search rsid in large dbsnp vcf by tabix come from this [issue](https://github.com/samtools/htslib/issues/427#issuecomment-253655392).  
 The web interface is shown in the figure below.    
 
-![](https://github.com/TuBieJun/search_rsid/raw/main/example.jpg)
+![](https://github.com/TuBieJun/search_rsid/raw/main/example.png)
