@@ -1,20 +1,12 @@
 # app.py
 from flask import Flask, render_template, request, make_response, session
+from search_rs import search_rs_process
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # 设置一个密钥用于会话加密
-
-# 模拟的函数，用于根据rsID获取SNP信息
-def get_snp_info(rsid):
-    # 这里应该实现根据rsID查询数据库或API获取SNP信息的逻辑
-    # 返回一个字典，包含chrom和position等信息
-    return {
-        "rsid": rsid,
-        "chrom": "chr1",
-        "position": "105678",
-        "ref": "A",
-        "alt": "G"
-    }
+#DB_FILE="/data/users/liteng/my_project/optimal_wgs_genotype_search/dbsnp_155_5cols_format_sorted.txt.gz"
+SEARCH_RS_DB_FILE=os.environ.get("SEARCH_RS_DB_FILE")
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -29,19 +21,9 @@ def index():
             error_message = "请填写RSIDs或上传文件。"
         elif rsids:
             rsids = rsids.splitlines()
-            snp_info_list = []
-            for rsid in rsids:
-                snp_info = get_snp_info(rsid.strip())
-                if snp_info:
-                    snp_info_list.append(snp_info)
         elif file:
             rsids = file.read().decode('utf-8').splitlines()
-            snp_info_list = []
-            for rsid in rsids:
-                snp_info = get_snp_info(rsid.strip())
-                if snp_info:
-                    snp_info_list.append(snp_info)
-
+        snp_info_list = search_rs_process(SEARCH_RS_DB_FILE, rsids, tabix_path="tabix")
         session['snp_info_list'] = snp_info_list
 
     if request.args.get('download'):
